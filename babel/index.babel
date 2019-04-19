@@ -118,6 +118,14 @@ const ConnectedFooter = connect(state => {
   };
 })(Footer);
 
+const regUrl = /(https?:\/\/[^\s]+)/g;
+const linkTransform = text => {
+  return text.replace(
+    regUrl,
+    url => `<a href="${url}" target="_blank" rel="noreferrer">${url}</a>`
+  );
+};
+
 const Todo = ({ onClick, completed, text }) => (
   <li className={completed ? "completed" : ""}>
     <div className="view">
@@ -127,7 +135,11 @@ const Todo = ({ onClick, completed, text }) => (
         type="checkbox"
         checked={completed}
       />
-      <label>{text}</label>
+      <label
+        dangerouslySetInnerHTML={{
+          __html: sanitizeHtml(linkTransform(text), { allowedTags: ["a"] })
+        }}
+      />
     </div>
   </li>
 );
