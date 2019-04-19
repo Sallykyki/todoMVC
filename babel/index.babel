@@ -99,8 +99,11 @@ const FilterLink = connect(
   })
 )(Link);
 
-const Footer = () => (
+const Footer = ({ todoCount }) => (
   <footer className="footer">
+    <span className="todo-count">
+      {`${todoCount} item${todoCount > 1 ? "s" : ""} left`}
+    </span>
     <ul className="filters">
       <FilterLink filter="SHOW_ALL">All</FilterLink>
       <FilterLink filter="SHOW_ACTIVE">Active</FilterLink>
@@ -108,6 +111,12 @@ const Footer = () => (
     </ul>
   </footer>
 );
+
+const ConnectedFooter = connect(state => {
+  return {
+    todoCount: getVisibleTodos(state.todos, "SHOW_ACTIVE").length
+  };
+})(Footer);
 
 const Todo = ({ onClick, completed, text }) => (
   <li className={completed ? "completed" : ""}>
@@ -188,7 +197,7 @@ const TodoApp = () => (
   <section className="todoapp">
     <AddTodo />
     <VisibleTodoList />
-    <Footer />
+    <ConnectedFooter />
   </section>
 );
 
